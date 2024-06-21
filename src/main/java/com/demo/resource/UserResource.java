@@ -1,22 +1,11 @@
 package com.demo.resource;
 
+import com.demo.dto.request.UserCriteria;
 import com.demo.dto.response.utils.ResponseUtils;
-import com.demo.entity.User;
 import com.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,6 +17,11 @@ public class UserResource {
     @GetMapping("")
     public ResponseEntity<?> getUsers() {
         return ResponseUtils.ok(userRepository.findAll());
+    }
+
+    @PostMapping("/find")
+    public ResponseEntity<?> findUsers(@RequestBody(required = false) UserCriteria userCriteria) {
+        return ResponseUtils.ok(userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification()));
     }
 
 //    @GetMapping("/fake-data")
