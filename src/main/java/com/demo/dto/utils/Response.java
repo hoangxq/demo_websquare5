@@ -1,4 +1,4 @@
-package com.demo.dto.response.utils;
+package com.demo.dto.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,10 +1,12 @@
 package com.demo.resource;
 
 import com.demo.dto.request.UserCriteria;
-import com.demo.dto.response.utils.ResponseUtils;
+import com.demo.dto.utils.PagingReq;
+import com.demo.dto.utils.ResponseUtils;
 import com.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -14,14 +16,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserResource {
     private final UserRepository userRepository;
 
-    @GetMapping("")
-    public ResponseEntity<?> getUsers() {
-        return ResponseUtils.ok(userRepository.findAll());
-    }
-
-    @PostMapping("/find")
-    public ResponseEntity<?> findUsers(@RequestBody(required = false) UserCriteria userCriteria) {
-        return ResponseUtils.ok(userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification()));
+    @PostMapping("")
+    public ResponseEntity<?> getUsers(@RequestBody(required = false) UserCriteria userCriteria, @Validated PagingReq pagingReq) {
+        return ResponseUtils.ok(userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification(), pagingReq.makePageable()));
     }
 
 //    @GetMapping("/fake-data")

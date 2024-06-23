@@ -1,9 +1,11 @@
-package com.demo.dto.response.utils;
+package com.demo.dto.utils;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.domain.Page;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class PagingRes extends Response {
 
