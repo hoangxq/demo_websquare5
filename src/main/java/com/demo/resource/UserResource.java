@@ -6,6 +6,7 @@ import com.demo.dto.utils.PagingReq;
 import com.demo.dto.utils.ResponseUtils;
 import com.demo.entity.User;
 import com.demo.repository.UserRepository;
+import com.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,22 +17,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 @CrossOrigin("*")
 public class UserResource {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @PostMapping("")
     public ResponseEntity<?> getUsers(@RequestBody(required = false) UserCriteria userCriteria, @Validated PagingReq pagingReq) {
-        return ResponseUtils.ok(userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification(), pagingReq.makePageable()));
+        return ResponseUtils.ok(userService.getUsers(userCriteria, pagingReq));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        return ResponseUtils.ok(userRepository.save(user));
+    @PostMapping("/upsert")
+    public ResponseEntity<?> upsertUser(@RequestBody User user) {
+        userService.upsertUser(user);
+        return ResponseUtils.ok();
     }
 
     @DeleteMapping("/remove-users")
     public ResponseEntity<?> removeUsers(@RequestBody RemoveUsersReq removeUsersReq) {
-        userRepository.deleteAllById(removeUsersReq.getUserIds());
+        userService.removeUsers(removeUsersReq);
         return ResponseUtils.ok();
+    }
+
+    @PostMapping("/export-excel")
+    public ResponseEntity<?> exportDataUsers(@RequestBody(required = false) UserCriteria userCriteria) {
+        return ResponseUtils.ok(userService.exportDataUsers(userCriteria));
     }
 
 //    @GetMapping("/fake-data")
