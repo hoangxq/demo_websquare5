@@ -1,8 +1,10 @@
 package com.demo.resource;
 
+import com.demo.dto.request.RemoveUsersReq;
 import com.demo.dto.request.UserCriteria;
 import com.demo.dto.utils.PagingReq;
 import com.demo.dto.utils.ResponseUtils;
+import com.demo.entity.User;
 import com.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,17 @@ public class UserResource {
     @PostMapping("")
     public ResponseEntity<?> getUsers(@RequestBody(required = false) UserCriteria userCriteria, @Validated PagingReq pagingReq) {
         return ResponseUtils.ok(userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification(), pagingReq.makePageable()));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        return ResponseUtils.ok(userRepository.save(user));
+    }
+
+    @DeleteMapping("/remove-users")
+    public ResponseEntity<?> removeUsers(@RequestBody RemoveUsersReq removeUsersReq) {
+        userRepository.deleteAllById(removeUsersReq.getUserIds());
+        return ResponseUtils.ok();
     }
 
 //    @GetMapping("/fake-data")
