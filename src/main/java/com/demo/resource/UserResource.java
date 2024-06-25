@@ -1,6 +1,8 @@
 package com.demo.resource;
 
+import com.demo.dto.UserDto;
 import com.demo.dto.request.RemoveUsersReq;
+import com.demo.dto.request.UpsertUserReq;
 import com.demo.dto.request.UserCriteria;
 import com.demo.dto.utils.PagingReq;
 import com.demo.dto.utils.ResponseUtils;
@@ -20,16 +22,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserResource {
     private final UserService userService;
     private final UserRepository userRepository;
-        private final TeamRepository teamRepository;
+    private final TeamRepository teamRepository;
 
-        @PostMapping("")
-        public ResponseEntity<?> getUsers(@RequestBody(required = false) UserCriteria userCriteria, @Validated PagingReq pagingReq) {
-            return ResponseUtils.ok(userService.getUsers(userCriteria, pagingReq));
-        }
+    @PostMapping("")
+    public ResponseEntity<?> getUsers(@RequestBody(required = false) UserCriteria userCriteria, @Validated PagingReq pagingReq) {
+        return ResponseUtils.ok(userService.getUsers(userCriteria, pagingReq));
+    }
 
     @PostMapping("/upsert")
-    public ResponseEntity<?> upsertUser(@RequestBody User user) {
-        userService.upsertUser(user);
+    public ResponseEntity<?> upsertUser(@RequestBody UpsertUserReq upsertUserReq) {
+        userService.upsertUser(upsertUserReq);
         return ResponseUtils.ok();
     }
 
