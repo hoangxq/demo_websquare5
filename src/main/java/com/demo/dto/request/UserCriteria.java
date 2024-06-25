@@ -1,5 +1,6 @@
 package com.demo.dto.request;
 
+import com.demo.entity.Gender;
 import com.demo.entity.User;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -14,9 +15,9 @@ import java.util.Objects;
 @Data
 public class UserCriteria {
     private String name;
-    private String team;
+    private Integer team;
     private String phone;
-    private String gender;
+    private Gender gender;
     private Date birthDateFrom;
     private Date birthDateTo;
 
@@ -26,14 +27,14 @@ public class UserCriteria {
             if (StringUtils.isNotBlank(name) && StringUtils.isNotEmpty(name)) {
                 predicates.add(criteriaBuilder.like(root.get("name"), "%" + name + "%"));
             }
-            if (StringUtils.isNotBlank(team) && StringUtils.isNotEmpty(team)) {
-                predicates.add(criteriaBuilder.like(root.get("team"), "%" + team + "%"));
+            if (Objects.nonNull(team)) {
+                predicates.add(criteriaBuilder.equal(root.get("team").get("id"), team));
             }
             if (StringUtils.isNotBlank(phone) && StringUtils.isNotEmpty(phone)) {
                 predicates.add(criteriaBuilder.like(root.get("phone"), "%" + phone + "%"));
             }
-            if (StringUtils.isNotBlank(gender) && StringUtils.isNotEmpty(gender)) {
-                predicates.add(criteriaBuilder.like(root.get("gender"), "%" + gender + "%"));
+            if (Objects.nonNull(gender)) {
+                predicates.add(criteriaBuilder.equal(root.get("gender"), gender));
             }
             if (Objects.nonNull(birthDateFrom)) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("birthDate"), birthDateFrom));
