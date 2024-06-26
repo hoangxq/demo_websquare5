@@ -61,4 +61,7 @@ public class ResponseUtils {
         return ResponseEntity.ok(Response.of(msg, data));
     }
 
+    public ResponseEntity<Response> notFound(String msg) {
+        return new ResponseEntity<>(Response.of(msg, null), HttpStatus.NOT_FOUND);
+    }
 }
