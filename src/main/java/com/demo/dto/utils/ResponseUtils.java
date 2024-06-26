@@ -13,32 +13,12 @@ public class ResponseUtils {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<Response> unauthorized(ErrorResponse error) {
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-    }
-
-    public ResponseEntity<Response> methodNotSupported(ErrorResponse error) {
-        return new ResponseEntity<>(error, HttpStatus.METHOD_NOT_ALLOWED);
-    }
-
-    public ResponseEntity<Response> mediaTypeNotSupported(ErrorResponse error) {
-        return new ResponseEntity<>(error, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-    }
-
     public ResponseEntity<Response> internalErr(ErrorResponse error) {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public ResponseEntity<Response> notSuccess(HttpStatus httpStt, ErrorResponse error) {
         return new ResponseEntity<>(error, httpStt);
-    }
-
-    public ResponseEntity<Response> created(Object obj) {
-        return new ResponseEntity<>(Response.of("Created", obj), HttpStatus.CREATED);
-    }
-
-    public ResponseEntity<Response> created() {
-        return new ResponseEntity<>(Response.of("Created", null), HttpStatus.CREATED);
     }
 
     public ResponseEntity<Response> ok() {

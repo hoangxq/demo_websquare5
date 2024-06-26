@@ -30,7 +30,7 @@ public class UserResource {
     }
 
     @PostMapping("/upsert")
-    public ResponseEntity<?> upsertUser(@RequestBody UpsertUserReq upsertUserReq) {
+    public ResponseEntity<?> upsertUser(@RequestBody @Validated UpsertUserReq upsertUserReq) {
         userService.upsertUser(upsertUserReq);
         return ResponseUtils.ok();
     }
