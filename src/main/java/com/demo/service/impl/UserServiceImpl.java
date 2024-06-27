@@ -6,6 +6,7 @@ import com.demo.dto.request.UpsertUserReq;
 import com.demo.dto.request.UserCriteria;
 import com.demo.dto.utils.PagingReq;
 import com.demo.entity.User;
+import com.demo.exception.ServiceException;
 import com.demo.repository.TeamRepository;
 import com.demo.repository.UserRepository;
 import com.demo.service.MappingHelper;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<?> getUsers(UserCriteria userCriteria, PagingReq pagingReq) {
-        return userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification(), pagingReq.makePageable())
+        return userRepository
+                .findAll(userCriteria == null ? null : userCriteria.toSpecification(), pagingReq.makePageable())
                 .map(e -> {
                     var res = mappingHelper.map(e, UserDto.class);
                     res.setTeam(e.getTeam().getName());
@@ -41,8 +43,27 @@ public class UserServiceImpl implements UserService {
                 .findById(upsertUserReq.getId())
                 .orElse(new User());
         mappingHelper.mapIfSourceNotNullAndStringNotBlank(upsertUserReq, user);
-        var team = teamRepository.findById(upsertUserReq.getTeam())
-                .orElseThrow(EntityNotFoundException::new);
+
+        userRepository
+                .findByEmail(upsertUserReq.getEmail())
+                .ifPresent(e -> {
+                    if (!e.getId().equals(user.getId()))
+                        throw new ServiceException("Email is existed in system", "err.duplicate.email");
+                });
+
+        userRepository
+                .findByPhone(upsertUserReq.getPhone())
+                .ifPresent(e -> {
+                    if (!e.getId().equals(user.getId()))
+                        throw new ServiceException("Phone number is existed in system", "err.duplicate.phone");
+                });
+
+        var team = teamRepository
+                .findById(upsertUserReq.getTeam())
+                .orElseThrow(() -> new ServiceException(
+                        MessageFormat.format("Team with id {0} n", upsertUserReq.getTeam()),
+                        "err.entity-not-found")
+                );
         user.setTeam(team);
         userRepository.save(user);
     }
@@ -54,7 +75,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<?> exportDataUsers(UserCriteria userCriteria) {
-        return userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification())
+        return userRepository
+                .findAll(userCriteria == null ? null : userCriteria.toSpecification())
                 .stream().map(e -> {
                     var res = mappingHelper.map(e, UserDto.class);
                     res.setTeam(e.getTeam().getName());
