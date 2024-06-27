@@ -14,7 +14,7 @@ import java.util.Objects;
 @Data
 public class UserCriteria {
     private String name;
-    private String team;
+    private Integer team;
     private String phone;
     private String gender;
     private Date birthDateFrom;
@@ -26,14 +26,14 @@ public class UserCriteria {
             if (StringUtils.isNotBlank(name) && StringUtils.isNotEmpty(name)) {
                 predicates.add(criteriaBuilder.like(root.get("name"), "%" + name + "%"));
             }
-            if (StringUtils.isNotBlank(team) && StringUtils.isNotEmpty(team)) {
-                predicates.add(criteriaBuilder.like(root.get("team"), "%" + team + "%"));
+            if (Objects.nonNull(team)) {
+                predicates.add(criteriaBuilder.equal(root.get("team").get("id"), team));
             }
             if (StringUtils.isNotBlank(phone) && StringUtils.isNotEmpty(phone)) {
                 predicates.add(criteriaBuilder.like(root.get("phone"), "%" + phone + "%"));
             }
             if (StringUtils.isNotBlank(gender) && StringUtils.isNotEmpty(gender)) {
-                predicates.add(criteriaBuilder.like(root.get("gender"), "%" + gender + "%"));
+                predicates.add(criteriaBuilder.equal(root.get("gender"), gender));
             }
             if (Objects.nonNull(birthDateFrom)) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("birthDate"), birthDateFrom));

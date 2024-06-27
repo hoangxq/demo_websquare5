@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class UserRequest {
+public class UserResponse {
     private Integer id;
     private String name;
     private String email;

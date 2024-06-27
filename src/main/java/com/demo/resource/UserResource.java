@@ -9,15 +9,12 @@ import com.demo.repository.TeamRepository;
 import com.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -67,28 +64,28 @@ public class UserResource {
 
         return user;
     }
-
-    @PostMapping("/get-all-user")
-    public ResponseEntity<?> getAllUser(@RequestBody(required = false) UserCriteria userCriteria) {
-        List<User> users = userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification());
-        List<UserRequest> userRequests = users.stream()
-                .map(UserMapper::toUserRequest)
-                .collect(Collectors.toList());
-        return ResponseUtils.ok(userRequests);
-    }
+//
+//    @PostMapping("/get-all-user")
+//    public ResponseEntity<?> getAllUser(@RequestBody(required = false) UserCriteria userCriteria) {
+//        List<User> users = userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification());
+//        List<UserRequest> userRequests = users.stream()
+//                .map(UserMapper::toUserRequest)
+//                .collect(Collectors.toList());
+//        return ResponseUtils.ok(userRequests);
+//    }
 
     @PostMapping("")
     public ResponseEntity<?> getUsers(@RequestBody(required = false) UserCriteria userCriteria, @Validated PagingReq pagingReq) {
-        List<User> users = userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification(), pagingReq.makePageable()).getContent();
-        List<UserRequest> userRequests = UserMapper.toUserRequests(users);
-        return ResponseUtils.ok(userRequests);
+        Page<User> users = userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification(), pagingReq.makePageable());
+        Page<UserResponse> userResponse = UserMapper.toUserResponse(users);
+        return ResponseUtils.ok(userResponse);
     }
 
     @PostMapping("/export-excel")
     public ResponseEntity<?> getUsers(@RequestBody(required = false) UserCriteria userCriteria) {
         List<User> users = userRepository.findAll(userCriteria == null ? null : userCriteria.toSpecification());
-        List<UserRequest> userRequests = UserMapper.toUserRequests(users);
-        return ResponseUtils.ok(userRequests);
+        List<UserResponse> userResponses = UserMapper.toUserResponse(users);
+        return ResponseUtils.ok(userResponses);
     }
 
     @PostMapping("/save-user")
